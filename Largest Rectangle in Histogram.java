@@ -16,29 +16,31 @@ Example 2:
 Input: heights = [2,4]
 Output: 4
   
-  public class Solution {
+ class Solution {
     public int largestRectangleArea(int[] heights) {
-        int[] hs = new int[heights.length + 2];
-        
-        for(int i=1; i<=heights.length; i++){
-            hs[i] = heights[i-1];
-        }
-   
-        int max = 0;
-        
-        Stack<Integer> s = new Stack<>();
-        
-        for(int i=0; i<hs.length; i++){
-            
-            while(!s.empty() && hs[i] < hs[s.peek()]){
-                int x = s.pop();
-                int h = hs[x];
-                int area = h * (i - s.peek() - 1);
-                if(area > max) max = area;
+        int n = heights.length;
+        int[] left = new int[n];
+        int[] right = new int[n];
+        for(int i = 0; i < n; i++){
+            int p = i - 1;
+            while(p >= 0 && heights[p] >= heights[i]){
+                p = left[p];
             }
-            
-            s.push(i);
+            left[i] = p;
         }
-        return max;
+        for(int i = n - 1; i >= 0; i--){
+            int p = i + 1;
+            while(p < n && heights[p] >= heights[i]){
+                p = right[p];
+            }
+            right[i] = p;
+        }
+        int res = 0;
+        for(int i = 0; i < n; i++){
+            res = Math.max(res, (right[i] - left[i] - 1) * heights[i]);
+        }
+        return res;
     }
+    
+    
 }
